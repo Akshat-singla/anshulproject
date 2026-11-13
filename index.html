@@ -588,12 +588,17 @@
 
                 <!-- Left Column: New Farmer-Industry Land Linkage Application Form (5 cols) -->
                 <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="bg-nccr-navy px-6 py-4 text-white flex items-center justify-between">
+                    <div class="bg-nccr-navy px-6 py-4 text-white flex items-center justify-between gap-3">
                         <div>
                             <h2 class="text-base font-bold">New Carbon Credit Linkage Form</h2>
                             <p class="text-xs text-sky-200">Register farmer land partnership &amp; upload proof</p>
                         </div>
-                        <i class="fa-solid fa-file-signature text-nccr-cyan text-xl"></i>
+                        <button type="button" onclick="loadDemoApplicationData()"
+                            class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[11px] font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
+                            title="Fill the form with sample data for the demonstration">
+                            <i class="fa-solid fa-wand-magic-sparkles text-nccr-cyan"></i>
+                            <span>Load Demo Data</span>
+                        </button>
                     </div>
 
                     <form id="carbonApplicationForm" onsubmit="handleApplicationSubmit(event)" class="p-6 space-y-5">
@@ -1449,6 +1454,44 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        /**
+         * Fill the applicant form with a complete offline demo record.
+         */
+        function loadDemoApplicationData() {
+            const demoData = {
+                applicantName: 'Coastal Green Horizons Pvt. Ltd.',
+                orgId: 'U74999TN2025PTC176420',
+                contactEmail: 'demo@coastalgreenhorizons.in',
+                farmerName: 'R. Karthikeyan',
+                farmerId: 'TN-CUD-DEMO-88412',
+                location: 'Pichavaram, Cuddalore, TN',
+                coordinates: '11.4226° N, 79.7748° E',
+                ecosystem: 'Mangrove Forest',
+                hectares: '12.5',
+                requestedCredits: '180'
+            };
+
+            Object.entries(demoData).forEach(([field, value]) => {
+                document.getElementById(`input${field.charAt(0).toUpperCase()}${field.slice(1)}`).value = value;
+            });
+
+            document.getElementById('inputLandDoc').value = '';
+            document.getElementById('inputLandImage').value = '';
+            uploadedTempImageBase64 = createCoastalSiteSVG(
+                'Pichavaram Demo Mangrove Zone',
+                demoData.coordinates,
+                'mangrove'
+            );
+            document.getElementById('docFileNameDisplay').textContent = 'Pichavaram_Demo_Land_Linkage_Deed.pdf';
+            document.getElementById('docFileNameDisplay').classList.add('text-nccr-navy', 'font-semibold');
+            document.getElementById('imgFileNameDisplay').textContent = 'Pichavaram_Demo_Mangrove_Site.jpg';
+            document.getElementById('imgFileNameDisplay').classList.add('text-nccr-navy', 'font-semibold');
+            document.getElementById('formImagePreview').src = uploadedTempImageBase64;
+            document.getElementById('formImagePreviewBox').classList.remove('hidden');
+
+            showToast('Demo application data loaded. Review it and submit when ready.', 'info');
         }
 
         /**
